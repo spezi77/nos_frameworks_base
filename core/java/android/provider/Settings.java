@@ -4293,6 +4293,12 @@ public final class Settings {
         public static final String LOCK_SCREEN_WEATHER_CONDITION_ICON = "lock_screen_weather_condition_icon";
 
         /**
+         * Whether to enable the pixel navbar animation
+         * @hide
+         */
+        public static final String PIXEL_NAV_ANIMATION = "pixel_nav_animation";
+
+        /**
          * Whether to hide the weather panel when the notifications will reach the number of notifications
          * @hide
          */
