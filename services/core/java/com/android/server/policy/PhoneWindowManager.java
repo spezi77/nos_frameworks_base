@@ -1010,15 +1010,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     Settings.Secure.NAVIGATION_BAR_VISIBLE), false, this,
                     UserHandle.USER_ALL);
             resolver.registerContentObserver(Settings.Secure.getUriFor(
-                    Settings.Secure.NAVIGATION_BAR_HEIGHT), false, this,
-                    UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.Secure.getUriFor(
-                    Settings.Secure.NAVIGATION_BAR_HEIGHT_LANDSCAPE), false, this,
-                    UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.Secure.getUriFor(
-                    Settings.Secure.NAVIGATION_BAR_WIDTH), false, this,
-                    UserHandle.USER_ALL);
-            resolver.registerContentObserver(Settings.Secure.getUriFor(
                     Settings.System.FORCE_NAVBAR_BOTTOM), false, this,
                     UserHandle.USER_ALL);
             updateSettings();
@@ -2193,8 +2184,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         }
 
-        updateNavigationBarSize();
-
         // SystemUI (status bar) layout policy
         int shortSizeDp = shortSize * DisplayMetrics.DENSITY_DEFAULT / density;
         int longSizeDp = longSize * DisplayMetrics.DENSITY_DEFAULT / density;
@@ -2299,8 +2288,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 mNavbarVisible = doShowNavbar;
             }
 
-            updateNavigationBarSize();
-
             // Configure rotation lock.
             int userRotation = Settings.System.getIntForUser(resolver,
                     Settings.System.USER_ROTATION, Surface.ROTATION_0,
@@ -2359,38 +2346,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         if (updateRotation) {
             updateRotation(true);
         }
-    }
-
-    private void updateNavigationBarSize() {
-        final Resources res = mContext.getResources();
-        int navbarHeightDef = res.getDimensionPixelSize(com.android.internal.R.dimen.navigation_bar_height);
-        int navbarHeightScale = Settings.Secure.getIntForUser(mContext.getContentResolver(),
-                Settings.Secure.NAVIGATION_BAR_HEIGHT, 100, UserHandle.USER_CURRENT);
-        int navbarHeightVal = getScaledNavbarSize(navbarHeightScale, navbarHeightDef);
-        mNavigationBarHeightForRotationDefault[mPortraitRotation] =
-        mNavigationBarHeightForRotationDefault[mUpsideDownRotation] = navbarHeightVal;
-
-        int navbarHeightLandDef = res.getDimensionPixelSize(com.android.internal.R.dimen.navigation_bar_height_landscape);
-        int navbarHeightLandScale = Settings.Secure.getIntForUser(mContext.getContentResolver(),
-                Settings.Secure.NAVIGATION_BAR_HEIGHT_LANDSCAPE, 100, UserHandle.USER_CURRENT);
-        int navbarHeightLandVal = getScaledNavbarSize(navbarHeightLandScale, navbarHeightLandDef);
-        mNavigationBarHeightForRotationDefault[mLandscapeRotation] =
-        mNavigationBarHeightForRotationDefault[mSeascapeRotation] = navbarHeightLandVal;
-
-        // Width of the navigation bar when presented vertically along one
-        // side
-        int navbarWidthDef = res.getDimensionPixelSize(com.android.internal.R.dimen.navigation_bar_width);
-        int navbarWidthScale = Settings.Secure.getIntForUser(mContext.getContentResolver(),
-                Settings.Secure.NAVIGATION_BAR_WIDTH, 100, UserHandle.USER_CURRENT);
-        int navbarWidthVal = getScaledNavbarSize(navbarWidthScale, navbarWidthDef);
-        mNavigationBarWidthForRotationDefault[mPortraitRotation] =
-        mNavigationBarWidthForRotationDefault[mUpsideDownRotation] =
-        mNavigationBarWidthForRotationDefault[mLandscapeRotation] =
-        mNavigationBarWidthForRotationDefault[mSeascapeRotation] = navbarWidthVal;
-    }
-
-    private int getScaledNavbarSize(int percentage, int defaultDimen) {
-        return Math.round(defaultDimen * (percentage * 0.01f));
     }
 
     private void updateWakeGestureListenerLp() {
@@ -2719,7 +2674,20 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         mStatusBarHeight =
                 res.getDimensionPixelSize(com.android.internal.R.dimen.status_bar_height);
 
-        updateNavigationBarSize();
+        // Height of the navigation bar when presented horizontally at bottom
+        mNavigationBarHeightForRotationDefault[mPortraitRotation] =
+        mNavigationBarHeightForRotationDefault[mUpsideDownRotation] =
+                res.getDimensionPixelSize(com.android.internal.R.dimen.navigation_bar_height);
+        mNavigationBarHeightForRotationDefault[mLandscapeRotation] =
+        mNavigationBarHeightForRotationDefault[mSeascapeRotation] = res.getDimensionPixelSize(
+                com.android.internal.R.dimen.navigation_bar_height_landscape);
+
+        // Width of the navigation bar when presented vertically along one side
+        mNavigationBarWidthForRotationDefault[mPortraitRotation] =
+        mNavigationBarWidthForRotationDefault[mUpsideDownRotation] =
+        mNavigationBarWidthForRotationDefault[mLandscapeRotation] =
+        mNavigationBarWidthForRotationDefault[mSeascapeRotation] =
+                res.getDimensionPixelSize(com.android.internal.R.dimen.navigation_bar_width);
 
         if (ALTERNATE_CAR_MODE_NAV_SIZE) {
             // Height of the navigation bar when presented horizontally at bottom

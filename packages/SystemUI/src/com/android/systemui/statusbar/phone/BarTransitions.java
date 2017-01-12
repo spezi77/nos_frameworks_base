@@ -35,7 +35,6 @@ import android.view.View;
 
 import com.android.systemui.Interpolators;
 import com.android.systemui.R;
-import com.android.systemui.navigation.NavigationController.NavbarOverlayResources;
 
 public class BarTransitions {
     private static final boolean DEBUG = false;
@@ -80,8 +79,6 @@ public class BarTransitions {
             mBarBackground.setWarningColor(color);
         }
     }
-
-    public void updateResources(NavbarOverlayResources resourceMap) {}
 
     /**
      * @param alwaysOpaque if {@code true}, the bar's background will always be opaque, regardless
