@@ -96,6 +96,7 @@ import android.service.notification.NotificationListenerService;
 import android.service.notification.NotificationListenerService.RankingMap;
 import android.service.notification.StatusBarNotification;
 import android.telecom.TelecomManager;
+import android.text.TextUtils;
 import android.util.ArraySet;
 import android.util.DisplayMetrics;
 import android.util.EventLog;
@@ -451,6 +452,16 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
     private HandlerThread mHandlerThread;
     private StatusBarHeaderMachine mStatusBarHeaderMachine;
 
+
+    Runnable mLongPressBrightnessChange = new Runnable() {
+        @Override
+        public void run() {
+            mStatusBarView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+            adjustBrightness(mInitialTouchX);
+            mLinger = BRIGHTNESS_CONTROL_LINGER_THRESHOLD + 1;
+        }
+};
+
     private DUSystemReceiver mDUReceiver = new DUSystemReceiver() {
         @Override
         protected void onSecureReceive(Context context, Intent intent) {
@@ -592,9 +603,6 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
                     Settings.System.STATUS_BAR_SHOW_CARRIER))) {
                 update();
                 updateCarrier();
-            } else if (uri.equals(Settings.System.getUriFor(
-                    Settings.System.NAV_BAR_DYNAMIC))) {
-                    mNavigationController.updateNavbarOverlay(mContext.getResources());
             }
 
             update();
@@ -1352,6 +1360,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         mNavigationBarView = (NavigationBarView) View.inflate(
                 context, R.layout.navigation_bar, null);
     }
+
+    public void forceAddNavigationBar(boolean makeGone) {}
 
     protected void initSignalCluster(View containerView) {
         SignalClusterView signalCluster =

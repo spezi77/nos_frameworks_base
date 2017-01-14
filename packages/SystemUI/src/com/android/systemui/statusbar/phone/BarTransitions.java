@@ -80,6 +80,8 @@ public class BarTransitions {
         }
     }
 
+    public void updateResources(NavbarOverlayResources resourceMap) {}
+
     /**
      * @param alwaysOpaque if {@code true}, the bar's background will always be opaque, regardless
      *         of what mode it is currently set to.
