@@ -35,6 +35,7 @@ import android.view.View;
 
 import com.android.systemui.Interpolators;
 import com.android.systemui.R;
+import com.android.systemui.navigation.NavigationController.NavbarOverlayResources;
 
 public class BarTransitions {
     private static final boolean DEBUG = false;
